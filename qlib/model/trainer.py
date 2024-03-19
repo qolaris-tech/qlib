@@ -45,8 +45,12 @@ def _exe_task(task_config: dict):
     model: Model = init_instance_by_config(task_config["model"], accept_types=Model)
     dataset: Dataset = init_instance_by_config(task_config["dataset"], accept_types=Dataset)
     reweighter: Reweighter = task_config.get("reweighter", None)
+    extension = task_config.get("extension", {})
     # model training
-    auto_filter_kwargs(model.fit)(dataset, reweighter=reweighter)
+    if extension.get("pretrained_path", None):
+        auto_filter_kwargs(model.fit)(dataset, reweighter=reweighter, save_path=extension.get("pretrained_path", None))
+    else:
+        auto_filter_kwargs(model.fit)(dataset, reweighter=reweighter)
     R.save_objects(**{"params.pkl": model})
     # this dataset is saved for online inference. So the concrete data should not be dumped
     dataset.config(dump_all=False, recursive=True)
