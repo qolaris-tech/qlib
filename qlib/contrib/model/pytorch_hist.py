@@ -193,6 +193,7 @@ class HIST(Model):
         y_train_values = np.squeeze(y_train.values)
         stock_index = stock_index.values
         stock_index[np.isnan(stock_index)] = 733
+        stock_index = stock_index.astype("int")
         self.HIST_model.train()
 
         # organize the train data into daily batches
