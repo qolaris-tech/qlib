@@ -325,7 +325,7 @@ class TRAModel(Model):
             "ICIR": metrics.IC.mean() / metrics.IC.std(),
         }
 
-        if self._writer is not None and epoch >= 0 and not is_pretrain:
+        if hasattr(self, "_writer") and self._writer is not None and epoch >= 0 and not is_pretrain:
             for key, value in metrics.items():
                 self._writer.add_scalar(prefix + "/" + key, value, epoch)
 
