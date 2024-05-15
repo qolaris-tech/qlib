@@ -275,8 +275,12 @@ class PredUpdater(DSBasedUpdater):
     def get_update_data(self, dataset: Dataset) -> pd.DataFrame:
         # Load model
         model = self.rmdl.get_model()
-        new_pred: pd.Series = model.predict(dataset)
-        data = _replace_range(self.old_data, new_pred.to_frame("score"))
+        new_pred = model.predict(dataset)
+        data = None
+        if isinstance(new_pred, pd.Series):
+            data = _replace_range(self.old_data, new_pred.to_frame("score"))
+        elif isinstance(new_pred, pd.DataFrame):
+            data = _replace_range(self.old_data, new_pred)
         self.logger.info(f"Finish updating new {new_pred.shape[0]} predictions in {self.record.info['id']}.")
         return data
 
